@@ -1,4 +1,4 @@
-from almacenamiento import Almacenamiento
+from almacden import Almacenamiento
 from validaciones import Validador
 from seguridad import Seguridad
 
