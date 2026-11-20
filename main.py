@@ -1,62 +1,55 @@
-from getpass import getpass
-from usuarios import SistemaUsuarios
+from modelo import Alumno, Docente, Materia
+from sistema import SistemaEscolar
 
-sistema = SistemaUsuarios()
+RUTA = "escuela.txt"
 
-def menu_usuarios(usuario_actual):
-    while True:
-        print("\n===== MENÚ DE USUARIOS =====")
-        print("1.- Consultar\n2.- Actualizar\n3.- Eliminar\n4.- Cambiar contraseña\n5.- Cerrar sesion")
-        op = input("\nSeleccione una opción: ")
 
-        if op == "1":
-            for u in sistema.listar():
-                print(f"Usuario: {u}")
-        elif op == "2":
-            u = input("Usuario a modificar: ").strip()
-            nu = input("Nuevo usuario: ").strip()
-            nc = input("Nuevo código: ").strip()
-            print(sistema.actualizar(u, nu, nc)[1])
-        elif op == "3":
-            u = input("Usuario a eliminar: ").strip()
-            if input("¿Está seguro? (s/n): ").lower() == "s":
-                print(sistema.eliminar(u)[1])
-        elif op == "4":
-            actual = getpass("Contraseña actual: ")
-            nueva = getpass("Nueva contraseña: ")
-            print(sistema.cambiar_password(usuario_actual, actual, nueva)[1])
-        elif op == "5":
-            print("Cerrando sesion...")
-            break
-        else:
-            print("Opción no válida.")
+def responder(sistema, resultado):
+    """Muestra el mensaje y guarda en el archivo si la operación funcionó."""
+    ok, mensaje = resultado
+    print(mensaje)
+    if ok:
+        sistema.guardar(RUTA)
+
+
+def pedir(texto):
+    return input(texto).strip()
+
 
 def main():
+    sistema = SistemaEscolar()
+    sistema.cargar(RUTA)
     while True:
-        print("\n===== SISTEMA DE USUARIOS =====")
-        print("1.- Iniciar sesión\n2.- Registrarse\n3.- Salir")
-        op = input("\nSeleccione una opción: ")
+        print("\n===== SISTEMA ESCOLAR =====")
+        print("1.- Registrar alumno\n2.- Registrar docente\n3.- Registrar materia")
+        print("4.- Inscribir alumno en materia\n5.- Listar todo\n6.- Salir")
+        op = pedir("\nSeleccione una opción: ")
 
         if op == "1":
-            usuario = input("Usuario: ").strip()
-            ok, msg = sistema.iniciar_sesion(usuario, getpass("Contraseña: "))
-            print(msg)
-            if ok:
-                menu_usuarios(usuario)
-
+            alumno = Alumno(pedir("Código: "), pedir("Nombre: "), pedir("Carrera: "))
+            responder(sistema, sistema.registrar(alumno))
         elif op == "2":
-            usuario = input("Usuario: ").strip()
-            codigo = input("Codigo de estudiante: ").strip()
-            password = getpass("Contraseña (min. 8 caracteres): ")
-            if getpass("Confirme la contraseña: ") != password:
-                print("Las contraseñas no coniciden")
-            else:
-                print(sistema.registrar(usuario, codigo, password)[1])
+            docente = Docente(pedir("Código: "), pedir("Nombre: "), pedir("Departamento: "))
+            responder(sistema, sistema.registrar(docente))
         elif op == "3":
+            clave, nombre = pedir("Clave: "), pedir("Nombre: ")
+            try:
+                cupo = int(pedir("Cupo máximo: "))
+            except ValueError:
+                print("El cupo debe ser un número entero.")
+                continue
+            responder(sistema, sistema.registrar(Materia(clave, nombre, cupo)))
+        elif op == "4":
+            responder(sistema, sistema.asignar(pedir("Código del alumno: "),
+                                               pedir("Clave de la materia: ")))
+        elif op == "5":
+            sistema.listar()
+        elif op == "6":
             print("Saliendo del sistema...")
             break
         else:
             print("Opción no válida.")
+
 
 if __name__ == "__main__":
     main()
