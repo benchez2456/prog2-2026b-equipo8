@@ -2,14 +2,16 @@ import hashlib
 import hmac
 import os
 
+
 class Seguridad:
-    interaciones = 200_000
+    iteraciones = 200_000
 
     def generar_salt(self):
         return os.urandom(16).hex()
 
     def calcular_hash(self, password, salt):
-        return hashlib.pbkdf2_hmac("sha256", password.encode("utf=8"), bytes.fromhex(salt), self.interaciones).hex()
+        return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"),
+                                   bytes.fromhex(salt), self.iteraciones).hex()
 
     def crear_credencial(self, password):
         salt = self.generar_salt()
