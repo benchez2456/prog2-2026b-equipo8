@@ -31,7 +31,7 @@ class Alumno(Persona):
 
 
 class Docente(Persona):
-    """Una persona que imparte una materia"""
+    """Una persona que imparte una materia(maestr@)"""
 
     tipo = "DOCENTE"
 
