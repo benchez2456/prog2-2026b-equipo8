@@ -1,0 +1,8 @@
+ALUMNO|123456789|Areceo de la O Luz Maria|Licenciatura en Creatividad Digital
+ALUMNO|987654321|Casillas Flores Brandon Hitz|Licenciatura en Ciberseguridad
+DOCENTE|654987321|Guerrero Palapox Jose Enrique|Creatividad Digital
+MATERIA|4512|Producion Multimedia II|20
+MATERIA|4578|Historia Contemporanea en las Artes|20
+MATERIA|963852741|Histo Arte y Psique|20
+INSCRIPCION|123456789|4512
+INSCRIPCION|987654321|963852741
