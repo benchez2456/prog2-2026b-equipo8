@@ -9,7 +9,7 @@ class Almacenamiento:
     separador = "|"
 
     def guardar(self, sistema, ruta):
-        """Escribe personas, materias e inscripciones, una por línea."""
+        """Escribe personas, materias, inscripciones y docentes, una por línea."""
         with open(ruta, "w", encoding="utf-8") as archivo:
             todos = list(sistema.personas.values()) + list(sistema.materias.values())
             for objeto in todos:
@@ -17,6 +17,10 @@ class Almacenamiento:
             for materia in sistema.materias.values():
                 for alumno in materia.inscritos:
                     partes = ["INSCRIPCION", alumno.codigo, materia.clave]
+                    archivo.write(self.separador.join(partes) + "\n")
+            for materia in sistema.materias.values():
+                if materia.docente:
+                    partes = ["IMPARTE", materia.docente.codigo, materia.clave]
                     archivo.write(self.separador.join(partes) + "\n")
 
     def cargar(self, sistema, ruta):
@@ -35,6 +39,8 @@ class Almacenamiento:
         """Mete una línea al sistema usando sus propias validaciones."""
         if partes[0] == "INSCRIPCION" and len(partes) == 3:
             return sistema.asignar(partes[1], partes[2])[0]
+        if partes[0] == "IMPARTE" and len(partes) == 3:
+            return sistema.asignar_docente(partes[1], partes[2])[0]
         objeto = self.crear(partes)
         return objeto is not None and sistema.registrar(objeto)[0]
 

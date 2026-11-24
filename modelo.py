@@ -56,6 +56,7 @@ class Materia:
         self.nombre = nombre
         self.cupo_maximo = cupo_maximo
         self.inscritos = []  # lista de objetos Alumno
+        self.docente = None  # objeto Docente que imparte la materia
 
     def hay_cupo(self):
         return len(self.inscritos) < self.cupo_maximo
@@ -67,9 +68,15 @@ class Materia:
         self.inscritos.append(alumno)
         return True
 
+    def asignar_docente(self, docente):
+        """Guarda al docente que imparte la materia."""
+        self.docente = docente
+
     def formato(self):
+        docente = self.docente.nombre if self.docente else "Sin asignar"
         texto = (f"[Materia] {self.clave} | {self.nombre} | "
-                 f"Cupo: {len(self.inscritos)}/{self.cupo_maximo}")
+                 f"Cupo: {len(self.inscritos)}/{self.cupo_maximo} | "
+                 f"Docente: {docente}")
         for alumno in self.inscritos:
             texto += f"\n      - {alumno.codigo} {alumno.nombre}"
         return texto

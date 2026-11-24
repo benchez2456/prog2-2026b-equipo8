@@ -1,5 +1,5 @@
 from almacen import Almacenamiento
-from modelo import Alumno, Materia, Persona
+from modelo import Alumno, Docente, Materia, Persona
 
 
 class Validador:
@@ -72,6 +72,21 @@ class SistemaEscolar:
         if not materia.inscribir(persona):
             return False, "La materia ya no tiene cupo."
         return True, f"{persona.nombre} inscrito en {materia.nombre}."
+
+    def asignar_docente(self, identificador, clave):
+        """Asigna al docente (por su código) a la materia (con clave)."""
+        persona = self.personas.get(identificador)
+        materia = self.materias.get(clave)
+        if persona is None:
+            return False, "No existe una persona con ese código."
+        if not isinstance(persona, Docente):
+            return False, "Solo los docentes pueden impartir una materia."
+        if materia is None:
+            return False, "No existe una materia con esa clave."
+        if materia.docente is persona:
+            return False, "El docente ya imparte esa materia."
+        materia.asignar_docente(persona)
+        return True, f"{persona.nombre} ahora imparte {materia.nombre}."
 
     def listar(self):
         """Imprime todo; cada objeto usa su propio formato."""

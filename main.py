@@ -22,7 +22,8 @@ def main():
     while True:
         print("\n===== SISTEMA ESCOLAR =====")
         print("1.- Registrar alumno\n2.- Registrar docente\n3.- Registrar materia")
-        print("4.- Inscribir alumno en materia\n5.- Listar todo\n6.- Salir")
+        print("4.- Inscribir alumno en materia\n5.- Asignar docente a materia")
+        print("6.- Listar todo\n7.- Salir")
         op = pedir("\nSeleccione una opción: ")
 
         if op == "1":
@@ -43,8 +44,11 @@ def main():
             responder(sistema, sistema.asignar(pedir("Código del alumno: "),
                                                pedir("Clave de la materia: ")))
         elif op == "5":
-            sistema.listar()
+            responder(sistema, sistema.asignar_docente(pedir("Código del docente: "),
+                                                       pedir("Clave de la materia: ")))
         elif op == "6":
+            sistema.listar()
+        elif op == "7":
             print("Saliendo del sistema...")
             break
         else:
