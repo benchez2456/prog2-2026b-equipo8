@@ -54,7 +54,10 @@ no repetidos, claves de materia no repetidas, cupo entero mayor que 0 y no pasar
 | `Almacenamiento` | Convertir el sistema a líneas de texto y regresarlo del archivo |
 | `SistemaEscolar` | Coordinar el registro, la inscripción y el listado de todo lo anterior |
 
+## Activación
+Solo se ejecutan `main.py` y `pruebas.py`; los demás archivos se importan solos.
+
 ## Integrantes
 
-- (Sanchez Castañon Benjamin Amadeo )
-- (Carrillo Jacome Edwin Gabriel)
+- `Sanchez Castañon Benjamin Amadeo`
+- `Carrillo Jacome Edwin Gabriel`
