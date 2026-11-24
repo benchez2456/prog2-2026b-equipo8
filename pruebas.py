@@ -72,12 +72,45 @@ class PruebasSistema(unittest.TestCase):
         self.s.registrar(Docente("111111111", "Luis", "Sistemas"))
         self.assertFalse(self.s.asignar("111111111", "IL350")[0])
 
+    def prueba_asignar_docente_a_materia(self):
+        docente = Docente("111111111", "Luis", "Sistemas")
+        self.s.registrar(docente)
+        self.assertTrue(self.s.asignar_docente("111111111", "IL350")[0])
+        self.assertIs(self.s.materias["IL350"].docente, docente)
+
+    def prueba_alumno_no_imparte_materia(self):
+        self.assertFalse(self.s.asignar_docente("123456789", "IL350")[0])
+        self.assertIsNone(self.s.materias["IL350"].docente)
+
+    def prueba_docente_no_ocupa_cupo(self):
+        self.s.registrar(Docente("111111111", "Luis", "Sistemas"))
+        self.s.asignar_docente("111111111", "IL350")
+        self.assertTrue(self.s.asignar("123456789", "IL350")[0])
+
+    def prueba_docente_ya_imparte_la_materia(self):
+        self.s.registrar(Docente("111111111", "Luis", "Sistemas"))
+        self.s.asignar_docente("111111111", "IL350")
+        self.assertFalse(self.s.asignar_docente("111111111", "IL350")[0])
+
+    def prueba_cambiar_de_docente(self):
+        self.s.registrar(Docente("111111111", "Luis", "Sistemas"))
+        self.s.registrar(Docente("222222222", "Marta", "Sistemas"))
+        self.s.asignar_docente("111111111", "IL350")
+        self.assertTrue(self.s.asignar_docente("222222222", "IL350")[0])
+        self.assertEqual(self.s.materias["IL350"].docente.nombre, "Marta")
+
+    def prueba_asignar_docente_inexistentes(self):
+        self.s.registrar(Docente("111111111", "Luis", "Sistemas"))
+        self.assertFalse(self.s.asignar_docente("000000000", "IL350")[0])
+        self.assertFalse(self.s.asignar_docente("111111111", "NOEXISTE")[0])
+
     def prueba_listar_imprime_todo(self):
         salida = io.StringIO()
         with contextlib.redirect_stdout(salida):
             self.s.listar()
         self.assertIn("Ana", salida.getvalue())
         self.assertIn("Programación 2", salida.getvalue())
+        self.assertIn("Sin asignar", salida.getvalue())
 
 
 class PruebasArchivo(unittest.TestCase):
@@ -86,15 +119,17 @@ class PruebasArchivo(unittest.TestCase):
         original.registrar(Alumno("123456789", "Ana", "INCO"))
         original.registrar(Docente("111111111", "Luis", "Sistemas"))
         original.registrar(Materia("IL350", "Programación 2", 2))
+        original.asignar_docente("111111111", "IL350")
         original.asignar("123456789", "IL350")
         with tempfile.TemporaryDirectory() as carpeta:
             ruta = os.path.join(carpeta, "prueba.txt")
             original.guardar(ruta)
             copia = SistemaEscolar()
-            self.assertEqual(copia.cargar(ruta), 4)
+            self.assertEqual(copia.cargar(ruta), 5)
         self.assertEqual(list(copia.personas), ["123456789", "111111111"])
         self.assertEqual(copia.materias["IL350"].cupo_maximo, 2)
         self.assertEqual(copia.materias["IL350"].inscritos[0].nombre, "Ana")
+        self.assertEqual(copia.materias["IL350"].docente.nombre, "Luis")
 
     def prueba_cargar_archivo_inexistente(self):
         self.assertEqual(SistemaEscolar().cargar("no_existe.txt"), 0)
